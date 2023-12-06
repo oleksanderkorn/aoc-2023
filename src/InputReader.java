@@ -20,4 +20,20 @@ public class InputReader {
         }
         return input;
     }
+    public static String readInputString(String path) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            BufferedReader reader =
+                    new BufferedReader(
+                            new FileReader(path));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }
+            reader.close();
+        } catch (IOException ignored) {
+        }
+        return sb.toString();
+    }
 }
