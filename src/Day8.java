@@ -1,5 +1,5 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -121,15 +121,23 @@ public class Day8 {
       counts.add(curr);
       positions.set(i, position);
     }
-    int min = counts.stream().min(Comparator.comparingLong(value -> value)).orElseThrow();
-    long steps = min;
-    while (true) {
-      long finalSteps = steps;
-      if (counts.stream().allMatch(a -> finalSteps % a == 0)) {
-        return steps;
-      }
-      steps += min;
-    }
+    // int min = counts.stream().min(Comparator.comparingLong(value -> value)).orElseThrow();
+    // long steps = min;
+    // while (true) {
+    //  long finalSteps = steps;
+    //  if (counts.stream().allMatch(a -> finalSteps % a == 0)) {
+    //    return steps;
+    //  }
+    //  steps += min;
+    // }
+    return lcm(counts).longValue();
+  }
+
+  public static BigInteger lcm(List<Integer> numbers) {
+    return numbers.stream()
+        .map(BigInteger::valueOf)
+        .reduce((acc, i) -> acc.multiply(i).divide(acc.gcd(i)))
+        .orElseThrow();
   }
 
   private int partOne(String instructions, Map<String, Pair> routes) {
