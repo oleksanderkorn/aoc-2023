@@ -2,7 +2,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,13 +21,16 @@ public class Day10 {
   }
 
   static List<String> prettify(List<String> input) {
-      input.replaceAll(string -> string.replaceAll("" + Pipe.NS.symbol, "┃")
-              .replaceAll("-", "━")
-              .replaceAll("\\|", "┃")
-              .replaceAll("L", "┗")
-              .replaceAll("J", "┛")
-              .replaceAll("7", "┓")
-              .replaceAll("F", "┏"));
+    input.replaceAll(
+        string ->
+            string
+                .replaceAll("" + Pipe.NS.symbol, "┃")
+                .replaceAll("-", "━")
+                .replaceAll("\\|", "┃")
+                .replaceAll("L", "┗")
+                .replaceAll("J", "┛")
+                .replaceAll("7", "┓")
+                .replaceAll("F", "┏"));
     return input;
   }
 
@@ -37,7 +39,18 @@ public class Day10 {
       String line = input.get(j);
       for (int i = 0; i < line.length(); i++) {
         if (line.charAt(i) == 'S') {
-          return findConnectedNodes(j, i, input).size() / 2;
+          Set<List<Integer>> nodes = findConnectedNodes(j, i, input);
+          for (int k = 0; k < input.size(); k++) {
+            for (int l = 0; l < input.get(0).length(); l++) {
+              if (nodes.contains(List.of(k, l))) {
+                System.out.print("\u001B[36m"); // CYAN
+              }
+              System.out.print(input.get(k).charAt(l));
+              System.out.print("\u001B[0m"); // WHITE
+            }
+            System.out.println();
+          }
+          return nodes.size() / 2;
         }
       }
     }
@@ -101,7 +114,6 @@ public class Day10 {
         int j = point[1];
         visited.add(List.of(i, j));
         Optional<Pipe> pipe = Pipe.from(input.get(i).charAt(j));
-        //        markVisited(input, i, j);
         // check right
         if (!visited.contains(List.of(i, j + 1))
             && pipe.isPresent()
@@ -144,26 +156,8 @@ public class Day10 {
         }
       }
     }
-    //    input.forEach(System.out::println);
     return visited;
   }
-
-  private static void markVisited(List<String> input, int i, int j) {
-    char[] lineChars = input.get(i).toCharArray();
-    if (nice.containsKey(lineChars[j])) {
-      lineChars[j] = nice.get(lineChars[j]);
-    }
-    input.set(i, new String(lineChars));
-  }
-
-  private static final Map<Character, Character> nice =
-          Map.of(
-                  Pipe.NS.symbol, '┃',
-                  Pipe.EW.symbol, '━',
-                  Pipe.NE.symbol, '┗',
-                  Pipe.NW.symbol, '┛',
-                  Pipe.SW.symbol, '┓',
-                  Pipe.SE.symbol, '┏');
 
   private enum Pipe {
     GROUND('.'),
